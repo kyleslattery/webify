@@ -1,7 +1,7 @@
-require "../lib/webify"
+$LOAD_PATH.unshift File.dirname(__FILE__) + "/../lib"
+require 'webify'
 
-describe Webify::Builder, ".new" do
-  it "should require the directory argument to be passed" do
-    lambda {Webify::Builder.new()}.should raise_exception(ArgumentError)
-  end
+Webify::Builder.build("--options")
+describe Webify::Builder, ".build" do
+  
 end
