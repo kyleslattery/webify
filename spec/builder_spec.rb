@@ -27,6 +27,16 @@ describe Webify::Builder, ".new" do
     @builder = Webify::Builder.new
     @builder.source_dir.should == "./"
   end
+  
+  it "should set output_dir if specified" do
+    @builder = Webify::Builder.new("directory", "asdf")
+    @builder.output_dir.should == "asdf"
+  end
+  
+  it "should set output_dir to ./webify/ if not specified" do
+    @builder = Webify::Builder.new
+    @builder.output_dir.should == "./webify/"
+  end
 end
 
 describe Webify::Builder, "#source_paths" do  

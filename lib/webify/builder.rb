@@ -5,8 +5,9 @@ module Webify
   class Builder
     attr_accessor :source_dir, :output_dir
     
-    def initialize(source=nil)
+    def initialize(source=nil, output=nil)
       @source_dir = source || "./"
+      @output_dir = output || "./webify/"
     end
     
     def build
