@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + "/../lib"
 require 'webify'
 
-describe Webify::File, '.new' do
+describe Webify::File, '.new with block' do
   before(:each) do
     @mock_file = mock(File, {:close => nil})
     File.stub!(:new).and_return(@mock_file)
