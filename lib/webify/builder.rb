@@ -32,7 +32,7 @@ module Webify
         Webify::File.new(output_path_for(path), "w") do |file|
           source = ::File.read(path)
           output = yield(source) || source
-          
+
           file.puts output
         end
       end
