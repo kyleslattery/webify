@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+# Gotta fix this once it's a real executable
+require 'lib/webify'
+
+Webify::Builder.new(ARGV[0], ARGV[1]).build
