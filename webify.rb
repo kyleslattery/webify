@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rdiscount'
+require 'erb'
 
 `mkdir -p output`
 
@@ -16,12 +17,17 @@ class BetterFile < File
   end
 end
 
+template = ERB.new(File.read('template.erb'))
+
 Dir['example/**/*.md'].each do |path|
   contents = File.read(path)
   
   newpath = path.gsub('example/', 'output/').gsub('.md', '.html')
   
   BetterFile.new(newpath, 'w') do |f|
-    f.write(RDiscount.new(contents).to_html)
+    title = File.basename(path, '.md')
+    body = RDiscount.new(contents).to_html
+    
+    f.write(template.result(binding))
   end
 end
