@@ -1,9 +1,18 @@
+require "rubygems"
+require "rdiscount"
+
 module Webify
   class Builder
     attr_accessor :source_dir, :output_dir
     
     def initialize(source=nil)
       @source_dir = source || "./"
+    end
+    
+    def build
+      process_source do |source|
+        RDiscount.new(source).to_html
+      end
     end
     
     def source_paths

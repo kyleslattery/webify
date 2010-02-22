@@ -69,10 +69,24 @@ end
 describe Webify::Builder, "#build" do
   before(:each) do
     @builder = Webify::Builder.new
-    @builder.stub!(:source_paths).and_return(["./test.md"])
+    @builder.stub!(:process_source).and_yield("content")
     
-    @file_stub = mock(File, :close => nil)
-    File.stub!(:new).and_return(@file_stub)
+    @rdiscount_mock = mock(RDiscount, :to_html => "html")
+    RDiscount.stub!(:new).and_return(@rdiscount_mock)
+  end
+  
+  it "should call process_source" do
+    @builder.should_receive(:process_source)
+  end
+  
+  it "should parse source with RDiscount" do
+    RDiscount.should_receive(:new).with("content").and_return(@rdiscount_mock)
+  end
+  
+  # TODO: This really should test to see if the block returns the value of
+  # to_html, but I don't know if that's possible.
+  it "should call to_html on RDiscount" do
+    @rdiscount_mock.should_receive(:to_html)
   end
   
   after(:each) do
