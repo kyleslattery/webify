@@ -65,3 +65,64 @@ describe Webify::Builder, "#output_path_for" do
     @builder.output_path_for(File.join("./", "directory/" "asdf.md")).should == File.join("../output/", "directory/", "asdf.htm")
   end
 end
+
+describe Webify::Builder, "#build" do
+  before(:each) do
+    @builder = Webify::Builder.new
+    @builder.stub!(:source_paths).and_return(["./test.md"])
+    
+    @file_stub = mock(File, :close => nil)
+    File.stub!(:new).and_return(@file_stub)
+  end
+  
+  after(:each) do
+    @builder.build
+  end
+end
+
+describe Webify::Builder, "#process_source" do
+  before(:each) do
+    @builder = Webify::Builder.new
+    @builder.stub!(:source_paths).and_return(["a", "b"])
+    @builder.stub!(:output_path_for).and_return("abc")
+    
+    @file_mock = mock(File)
+    @file_mock.stub!(:puts)
+    
+    File.stub!(:read).and_return("asdf", "fdsa")
+    
+    Webify::File.stub(:new).and_yield(@file_mock)
+  end
+  
+  it "should require a block" do
+    lambda {@builder.process_source}.should raise_exception(LocalJumpError)
+  end
+  
+  it "should read the contents of each source_path" do
+    File.should_receive(:read).with("a").once
+    File.should_receive(:read).with("b").once
+    @builder.process_source {}
+  end
+  
+  it "should yield the content of each source file" do
+    content = []
+    @builder.process_source {|a| content << a}
+    content.should == ["asdf", "fdsa"]
+  end
+  
+  it "should write to file specified by output_file_for" do
+    Webify::File.should_receive(:new).with("abc", "w").twice
+    @builder.process_source {}
+  end
+  
+  it "should write return value from block to the output file" do
+    @file_mock.should_receive(:puts).with("sdf").twice
+    @builder.process_source {|a| "sdf"}
+  end
+  
+  it "should puts source if nothing is returned from block" do
+    @file_mock.should_receive(:puts).with("asdf")
+    @file_mock.should_receive(:puts).with("fdsa")
+    @builder.process_source {}
+  end
+end

@@ -5,7 +5,7 @@ module Webify
     def initialize(source=nil)
       @source_dir = source || "./"
     end
-        
+    
     def source_paths
       dir  = @source_dir.nil? ? "./" : @source_dir
       glob = File.join(dir, "**", "*.md")
@@ -15,6 +15,17 @@ module Webify
     
     def output_path_for(source_path)
       source_path.gsub(@source_dir, @output_dir).gsub(/\.md$/, ".htm")
+    end
+    
+    def process_source(&block)
+      source_paths.each do |path|
+        Webify::File.new(output_path_for(path), "w") do |file|
+          source = ::File.read(path)
+          output = yield(source) || source
+          
+          file.puts output
+        end
+      end
     end
   end
 end
