@@ -1,0 +1,10 @@
+Manifest
+README.md
+Rakefile
+bin/webify
+lib/webify.rb
+lib/webify/builder.rb
+lib/webify/file.rb
+spec/builder_spec.rb
+spec/file_spec.rb
+template.erb
